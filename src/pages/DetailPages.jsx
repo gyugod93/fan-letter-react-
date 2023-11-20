@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteLetters, editedLetters } from "redux/modules/letters";
 
-function DetailPages({ letters, setLetters }) {
+function DetailPages() {
+  const dispatch = useDispatch();
+  const letters = useSelector((state) => state.letters.letters);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
+
   const params = useParams();
   const findLetters = letters.find((letter) => letter.id === params.id);
   const navigate = useNavigate();
@@ -14,10 +20,7 @@ function DetailPages({ letters, setLetters }) {
     const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
 
     if (confirmDelete) {
-      const updatedLetters = letters.filter(
-        (letter) => letter.id !== params.id
-      );
-      setLetters(updatedLetters);
+      dispatch(deleteLetters(params.id));
       navigate("/");
     }
   };
@@ -32,10 +35,12 @@ function DetailPages({ letters, setLetters }) {
       alert("아무런 수정사항이 없습니다.");
       setIsEditing(false);
     } else {
-      const updatedLetters = letters.map((letter) =>
-        letter.id === params.id ? { ...letter, content: editedContent } : letter
+      dispatch(
+        editedLetters({
+          id: params.id,
+          content: editedContent,
+        })
       );
-      setLetters(updatedLetters);
       setIsEditing(false);
       navigate("/");
     }

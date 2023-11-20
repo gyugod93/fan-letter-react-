@@ -1,8 +1,14 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-function EmptyLetter({ letters, selectMember }) {
+function Letter() {
+  const letters = useSelector((state) => state.letters.letters);
+  const selectMember = useSelector(
+    (state) => state.selectMember.selectMemberId
+  );
+
   const navigate = useNavigate();
   const goToDetailPage = (id) => {
     navigate(`/detailPages/${id}`);
@@ -109,4 +115,4 @@ const Content = styled.p`
   text-align: center;
   line-height: 2;
 `;
-export default EmptyLetter;
+export default Letter;

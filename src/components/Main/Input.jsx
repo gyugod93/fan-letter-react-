@@ -1,16 +1,20 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addLetters } from "redux/modules/letters";
+import { choiseMember } from "redux/modules/selectMember";
 
-function Input({
-  nickname,
-  setNickname,
-  content,
-  setContent,
-  selectMember,
-  setSelectMember,
-  setLetters,
-}) {
+function Input() {
+  const [nickname, setNickname] = useState("");
+  const [content, setContent] = useState("");
+
+  const selectMember = useSelector(
+    (state) => state.selectMember.selectMemberId
+  );
+  const dispatch = useDispatch();
+
   const addLetterHandler = (e) => {
     e.preventDefault();
     if (nickname.trim() && content.trim()) {
@@ -24,7 +28,8 @@ function Input({
         content,
       };
       //새로운 방식으로 만듬 함수형으로
-      setLetters((prev) => [...prev, newLetter]);
+
+      dispatch(addLetters(newLetter));
       setNickname("");
       setContent("");
     } else {
@@ -64,7 +69,13 @@ function Input({
           누구에게 보내실 건가요? {/* 고민좀해보자 */}
           <select
             value={selectMember}
-            onChange={(e) => setSelectMember(Number(e.target.value))}
+            onChange={(e) => {
+              console.log(
+                Number(e.target.value),
+                typeof Number(e.target.value)
+              );
+              dispatch(choiseMember(Number(e.target.value)));
+            }}
           >
             <option value={0}>이찬혁</option>
             <option value={1}>이수현</option>
